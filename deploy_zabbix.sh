@@ -7,6 +7,8 @@ ARGS="$@"
 
 BRANCH="master"
 
+echo "hello"
+
 self_update() {
     cd $SCRIPTPATH
 

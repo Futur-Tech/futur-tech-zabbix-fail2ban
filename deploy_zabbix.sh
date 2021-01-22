@@ -12,7 +12,7 @@ echo "hello"
 self_update() {
     cd $SCRIPTPATH
     
-    [ -n $(git -c core.fileMode=false diff --name-only origin/$BRANCH) ] && {
+    [ -n $(git diff --name-only origin/$BRANCH) ] && {
         echo "Found a new version of me, updating myself..."
         git pull --force
         git checkout $BRANCH

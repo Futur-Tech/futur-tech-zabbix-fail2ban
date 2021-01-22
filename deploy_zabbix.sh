@@ -7,10 +7,9 @@ ARGS="$@"
 
 BRANCH="master"
 
-echo "hello"
-
 self_update() {
     cd $SCRIPTPATH
+    git fetch
     
     [ -n $(git diff --name-only origin/$BRANCH) ] && {
         echo "Found a new version of me, updating myself..."

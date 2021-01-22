@@ -11,7 +11,8 @@ self_update() {
     cd $SCRIPTPATH
     git fetch
 
-    [ -n $(git pull --dry-run | grep $SCRIPTNAME) ] && {
+    DIFF=$(git diff --name-only origin/$BRANCH)
+    [ -n "DIFF" ] || {
         echo "Found a new version of me, updating myself..."
         git pull --force
         git checkout $BRANCH

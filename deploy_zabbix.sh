@@ -9,7 +9,8 @@ BRANCH="master"
 
 self_update() {
     cd $SCRIPTPATH
-    git fetch
+
+    git config core.filemode false
 
     [ -n $(git diff --name-only origin/$BRANCH | grep $SCRIPTNAME) ] && {
         echo "Found a new version of me, updating myself..."

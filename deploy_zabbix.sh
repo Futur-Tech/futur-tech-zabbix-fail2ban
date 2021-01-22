@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
 SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
+SOURCE_DIR=$(dirname $0)
+ZABBIX_DIR=/etc/zabbix
 SCRIPTNAME="$0"
 ARGS="$@"
 
 BRANCH="master"
 
 self_update() {
-    cd $SCRIPTPATH
+    cd $SOURCE_DIR
     git fetch
 
     DIFF=$(git diff --name-only origin/$BRANCH)
@@ -27,8 +28,6 @@ self_update() {
 }
 
 main() {
-    SOURCE_DIR=$(dirname $0)
-    ZABBIX_DIR=/etc/zabbix
 
     cp -rv ${SOURCE_DIR}/fail2ban.conf ${ZABBIX_DIR}/zabbix_agentd.d/fail2ban.conf
 

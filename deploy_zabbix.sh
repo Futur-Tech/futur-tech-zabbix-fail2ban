@@ -11,10 +11,8 @@ echo "hello"
 
 self_update() {
     cd $SCRIPTPATH
-
-    git config core.filemode false
-
-    [ -n $(git diff --name-only origin/$BRANCH | grep $SCRIPTNAME) ] && {
+    
+    [ -n $(git -c core.fileMode=false diff --name-only origin/$BRANCH) ] && {
         echo "Found a new version of me, updating myself..."
         git pull --force
         git checkout $BRANCH

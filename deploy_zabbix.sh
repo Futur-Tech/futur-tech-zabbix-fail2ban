@@ -10,13 +10,12 @@ BRANCH="master"
 
 self_update() {
     cd $SOURCE_DIR
+    git checkout $BRANCH
     git fetch
 
     DIFF="$(git diff --name-only origin/$BRANCH)"
     [ -n "DIFF" ] || {
         echo "Found a new version of me, updating myself..."
-        git pull --force
-        git checkout $BRANCH
         git pull --force
         echo "Running the new version..."
         exec "$SCRIPTNAME" "$@"

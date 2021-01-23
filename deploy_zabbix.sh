@@ -12,7 +12,7 @@ self_update() {
     cd $SOURCE_DIR
     git fetch
 
-    DIFF=$(git diff --name-only origin/$BRANCH)
+    DIFF="$(git diff --name-only origin/$BRANCH)"
     [ -n "DIFF" ] || {
         echo "Found a new version of me, updating myself..."
         git pull --force

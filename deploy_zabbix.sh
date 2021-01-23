@@ -24,6 +24,7 @@ self_update() {
         exit 1
     }
     echo "Already the latest version."
+    echo "Branch selected is $BRANCH"
 }
 
 main() {

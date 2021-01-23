@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-SCRIPT=$(readlink -f "$0")
 SOURCE_DIR=$(dirname $0)
 ZABBIX_DIR=/etc/zabbix
+
+SCRIPT=$(readlink -f "$0")
 SCRIPTNAME="$0"
 ARGS="$@"
 

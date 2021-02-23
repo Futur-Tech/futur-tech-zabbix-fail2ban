@@ -35,6 +35,8 @@ $S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 #############################
 #############################
 
+rm "${ZBX_CONF_AGENT_D}/fail2ban.conf"
+
 $S_DIR_PATH/ft-util/ft_util_file-deploy "$S_DIR/zbx.conf/ft-fail2ban.conf" "${ZBX_CONF_AGENT_D}/ft-fail2ban.conf"
 
 #############################

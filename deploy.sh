@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Deploy script FT-BACKUP v1.0
-
 source "$(dirname "$0")/ft-util/ft_util_inc_var"
 
 ZBX_ETC="/etc/zabbix"

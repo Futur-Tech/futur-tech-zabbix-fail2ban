@@ -22,6 +22,7 @@ $S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 
 echo "Defaults:zabbix !requiretty" | sudo EDITOR='tee' visudo --file=$SUDOERS_ETC &>/dev/null
 echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/deploy-update.sh" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
+echo "zabbix ALL=(ALL) NOPASSWD:/usr/bin/fail2ban-client status" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
 echo "zabbix ALL=(ALL) NOPASSWD:/usr/bin/fail2ban-client status *" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
 
 cat $SUDOERS_ETC | $S_LOG -d "$S_NAME" -d "$SUDOERS_ETC" -i 

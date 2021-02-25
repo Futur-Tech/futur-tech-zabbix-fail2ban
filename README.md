@@ -9,7 +9,7 @@
 ## Installation
 
     cd /usr/local/src
-    git clone https://github.com/GuillaumeHullin/futur-tech-zabbix-fail2ban
+    git clone https://github.com/Futur-Tech/futur-tech-zabbix-fail2ban
     cd futur-tech-zabbix-fail2ban ; ./deploy.sh
 
 ## Update

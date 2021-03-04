@@ -12,9 +12,11 @@
     git clone https://github.com/Futur-Tech/futur-tech-zabbix-fail2ban
     cd futur-tech-zabbix-fail2ban ; ./deploy.sh
 
-## Update
-
-    /usr/local/src/futur-tech-zabbix-fail2ban/deploy-update.sh -b main
+## deploy-update.sh
+  
+    ./deploy-update.sh -b main
+    
+This script will automatically pull the latest version of the branch ("main" in the example) and relaunch itself if a new version is found. Then it will run deploy.sh. Also note that any additional arguments given to this script will be passed to the deploy.sh script.
 
 ## Note
 

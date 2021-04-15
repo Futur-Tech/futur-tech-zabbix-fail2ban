@@ -4,7 +4,7 @@ source "$(dirname "$0")/ft-util/ft_util_inc_var"
 
 ZBX_ETC="/etc/zabbix"
 ZBX_CONF_AGENT="${ZBX_ETC}/zabbix_agentd.conf"
-ZBX_CONF_AGENT_D="${ZBX_ETC}/zabbix_agentd.d"
+ZBX_CONF_AGENT_D="${ZBX_ETC}/zabbix_agentd.conf.d"
 SRC_DIR="/usr/local/src"
 SUDOERS_ETC="/etc/sudoers.d/ft-fail2ban"
 

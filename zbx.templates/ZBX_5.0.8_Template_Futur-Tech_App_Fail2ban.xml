@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-02-23T09:33:36Z</date>
+    <date>2021-09-24T10:25:06Z</date>
     <groups>
         <group>
             <name>Templates/Futur-Tech/Applications</name>
@@ -63,6 +63,19 @@
                                     <name>Fail2ban</name>
                                 </application>
                             </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>({avg(1d)}*1.1)-{last()}&lt;0 and {last()}&gt;{$FAIL2BAN.BAN.MIN:&quot;{#JAIL}&quot;}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>({avg(1d,1d)})-{max(1d)}&gt;=0</recovery_expression>
+                                    <name>Increased banned IP on Fail2ban {#JAIL}</name>
+                                    <opdata>Currently banned addresses: {ITEM.LASTVALUE}</opdata>
+                                    <priority>HIGH</priority>
+                                    <description>Last value of IP banned is more than 10% above the average of the last 24h. Trigger will recover when the 24h max value is below or equal of the previous 24h average.&#13;
+&#13;
+You can also set a macro specific to the jail in order to not trigger a problem under a certain threshold of ban.</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
                         </item_prototype>
                     </item_prototypes>
                     <graph_prototypes>
@@ -83,6 +96,25 @@
                     </graph_prototypes>
                 </discovery_rule>
             </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$FAIL2BAN.BAN.MIN}</macro>
+                    <value>0</value>
+                    <description>Minimum count of bans in order to trigger problem</description>
+                </macro>
+                <macro>
+                    <macro>{$FAIL2BAN.BAN.MIN:&quot;apache-auth&quot;}</macro>
+                    <value>0</value>
+                </macro>
+                <macro>
+                    <macro>{$FAIL2BAN.BAN.MIN:&quot;sshd&quot;}</macro>
+                    <value>0</value>
+                </macro>
+                <macro>
+                    <macro>{$FAIL2BAN.BAN.MIN:&quot;webmin-auth&quot;}</macro>
+                    <value>0</value>
+                </macro>
+            </macros>
         </template>
     </templates>
     <value_maps>

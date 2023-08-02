@@ -1,0 +1,87 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-08-02T20:07:50Z'
+  groups:
+    - uuid: 7f27dc73981940769811e7fae4a26772
+      name: Templates/Futur-Tech/Applications
+  templates:
+    - uuid: 2fd3594949ce4a808930e220b4b5f819
+      template: 'Futur-Tech App Fail2ban'
+      name: 'Futur-Tech App Fail2ban'
+      description: 'https://github.com/GuillaumeHullin/futur-tech-zabbix-fail2ban'
+      groups:
+        - name: Templates/Futur-Tech/Applications
+      items:
+        - uuid: ec939edab79e46a28161b754a98d7300
+          name: 'Fail2Ban service is running'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[fail2ban-server]'
+          description: 'ping - tests if the server is alive'
+          valuemap:
+            name: 'Service state'
+          tags:
+            - tag: Application
+              value: Fail2ban
+          triggers:
+            - uuid: beaada3ab9454a95b42c25aac7dace92
+              expression: 'last(/Futur-Tech App Fail2ban/proc.num[fail2ban-server])=0'
+              name: 'Fail2ban server is Down'
+              priority: AVERAGE
+      discovery_rules:
+        - uuid: a00e42752ac646af92757fde020845c2
+          name: 'Fail2ban discovery'
+          type: ZABBIX_ACTIVE
+          key: fail2ban.discovery
+          delay: 6h
+          description: 'Discovery of jails from fail2ban daemon.'
+          item_prototypes:
+            - uuid: 0d1d85f3552a4df5902a8bea1f212b4b
+              name: 'Fail2ban {#JAIL} banned IPs'
+              type: ZABBIX_ACTIVE
+              key: 'fail2ban.status[{#JAIL}]'
+              units: count
+              tags:
+                - tag: Application
+                  value: Fail2ban
+              trigger_prototypes:
+                - uuid: f4d0daf732b044088e65e82d14dd2cb8
+                  expression: '(avg(/Futur-Tech App Fail2ban/fail2ban.status[{#JAIL}],1d)*1.1)-last(/Futur-Tech App Fail2ban/fail2ban.status[{#JAIL}])<0 and last(/Futur-Tech App Fail2ban/fail2ban.status[{#JAIL}])>{$FAIL2BAN.BAN.MIN:"{#JAIL}"}'
+                  recovery_mode: RECOVERY_EXPRESSION
+                  recovery_expression: '(avg(/Futur-Tech App Fail2ban/fail2ban.status[{#JAIL}],1d:now-1d))-max(/Futur-Tech App Fail2ban/fail2ban.status[{#JAIL}],1d)>=0'
+                  name: 'Increased banned IP on Fail2ban {#JAIL}'
+                  opdata: 'Currently banned addresses: {ITEM.LASTVALUE}'
+                  priority: HIGH
+                  description: |
+                    Last value of IP banned is more than 10% above the average of the last 24h. Trigger will recover when the 24h max value is below or equal of the previous 24h average.
+                    
+                    You can also set a macro specific to the jail in order to not trigger a problem under a certain threshold of ban.
+          graph_prototypes:
+            - uuid: 2f61ee115b4c470db0114823330954ca
+              name: 'Count of banned IPs on jail {#JAIL}'
+              graph_items:
+                - sortorder: '1'
+                  drawtype: FILLED_REGION
+                  color: C62828
+                  item:
+                    host: 'Futur-Tech App Fail2ban'
+                    key: 'fail2ban.status[{#JAIL}]'
+      tags:
+        - tag: Futur-Tech
+      macros:
+        - macro: '{$FAIL2BAN.BAN.MIN}'
+          value: '0'
+          description: 'Minimum count of bans in order to trigger problem'
+        - macro: '{$FAIL2BAN.BAN.MIN:"apache-auth"}'
+          value: '0'
+        - macro: '{$FAIL2BAN.BAN.MIN:"sshd"}'
+          value: '0'
+        - macro: '{$FAIL2BAN.BAN.MIN:"webmin-auth"}'
+          value: '0'
+      valuemaps:
+        - uuid: 2c602cd193544e158948c8c3db425aee
+          name: 'Service state'
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up

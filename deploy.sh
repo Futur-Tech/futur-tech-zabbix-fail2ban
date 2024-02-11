@@ -2,39 +2,35 @@
 
 source "$(dirname "$0")/ft-util/ft_util_inc_var"
 
-SRC_DIR="/usr/local/src"
-SUDOERS_ETC="/etc/sudoers.d/ft-fail2ban"
+app_name="ft-fail2ban"
 
 # Checking which Zabbix Agent is detected and adjust include directory
-$(which zabbix_agent2 >/dev/null) && ZBX_CONF_AGENT_D="/etc/zabbix/zabbix_agent2.d"
-$(which zabbix_agentd >/dev/null) && ZBX_CONF_AGENT_D="/etc/zabbix/zabbix_agentd.conf.d"
-if [ ! -d "${ZBX_CONF_AGENT_D}" ] ; then $S_LOG -s crit -d $S_NAME "${ZBX_CONF_AGENT_D} Zabbix Include directory not found" ; exit 10 ; fi
+$(which zabbix_agent2 >/dev/null) && zbx_conf_agent_d="/etc/zabbix/zabbix_agent2.d"
+$(which zabbix_agentd >/dev/null) && zbx_conf_agent_d="/etc/zabbix/zabbix_agentd.conf.d"
+if [ ! -d "${zbx_conf_agent_d}" ]; then
+  $S_LOG -s crit -d $S_NAME "${zbx_conf_agent_d} Zabbix Include directory not found"
+  exit 10
+fi
 
-
-$S_LOG -d $S_NAME "Start $S_NAME $*"
+$S_LOG -d $S_NAME "Start $S_DIR_NAME/$S_NAME $*"
 
 echo "
   SETUP SUDOER FILES
 ------------------------------------------"
 
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
-
-echo "Defaults:zabbix !requiretty" | sudo EDITOR='tee' visudo --file=$SUDOERS_ETC &>/dev/null
-echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/deploy-update.sh" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
-echo "zabbix ALL=(ALL) NOPASSWD:/usr/bin/fail2ban-client status" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
-echo "zabbix ALL=(ALL) NOPASSWD:/usr/bin/fail2ban-client status *" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
-
-cat $SUDOERS_ETC | $S_LOG -d "$S_NAME" -d "$SUDOERS_ETC" -i 
-
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
-
+# Setup sudoers file for Zabbix
+bak_if_exist "/etc/sudoers.d/${app_name}"
+sudoersd_reset_file $app_name zabbix
+sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/deploy-update.sh"
+sudoersd_addto_file $app_name zabbix "$(type -p fail2ban-client) status"
+sudoersd_addto_file $app_name zabbix "$(type -p fail2ban-client) status *"
+show_bak_diff_rm "/etc/sudoers.d/${app_name}"
 
 echo "
   INSTALL ZABBIX FILES
 ------------------------------------------"
 
-$S_DIR_PATH/ft-util/ft_util_file-deploy "$S_DIR/zbx.conf/ft-fail2ban.conf" "${ZBX_CONF_AGENT_D}/ft-fail2ban.conf"
-
+$S_DIR_PATH/ft-util/ft_util_file-deploy "$S_DIR/etc.zabbix/${app_name}.conf" "${zbx_conf_agent_d}/${app_name}.conf"
 
 echo "
   RESTART ZABBIX LATER

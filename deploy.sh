@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname "$0")/ft-util/ft_util_inc_var"
+for ft_util in $(dirname "$0")/ft-util/ft_util_*; do source "$ft_util"; done
 
 app_name="ft-fail2ban"
 

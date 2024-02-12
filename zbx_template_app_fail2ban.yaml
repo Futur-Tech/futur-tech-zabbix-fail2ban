@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2024-02-11T12:45:32Z'
+  date: '2024-02-12T08:37:24Z'
   groups:
     - uuid: 7f27dc73981940769811e7fae4a26772
       name: Templates/Futur-Tech/Applications
@@ -19,6 +19,9 @@ zabbix_export:
           description: 'ping - tests if the server is alive'
           valuemap:
             name: 'Service state'
+          tags:
+            - tag: component
+              value: security
           triggers:
             - uuid: beaada3ab9454a95b42c25aac7dace92
               expression: 'last(/Futur-Tech App Fail2ban/proc.num[fail2ban-server])=0'
@@ -40,6 +43,9 @@ zabbix_export:
               type: ZABBIX_ACTIVE
               key: 'fail2ban.cur_banned[{#JAIL}]'
               units: count
+              tags:
+                - tag: component
+                  value: security
               trigger_prototypes:
                 - uuid: f4d0daf732b044088e65e82d14dd2cb8
                   expression: '(avg(/Futur-Tech App Fail2ban/fail2ban.cur_banned[{#JAIL}],1d)*1.1)-last(/Futur-Tech App Fail2ban/fail2ban.cur_banned[{#JAIL}])<0 and last(/Futur-Tech App Fail2ban/fail2ban.cur_banned[{#JAIL}])>{$FAIL2BAN.BAN.MIN:"{#JAIL}"}'
@@ -60,6 +66,9 @@ zabbix_export:
               delay: 5m
               valuemap:
                 name: 'Service state'
+              tags:
+                - tag: component
+                  value: security
               trigger_prototypes:
                 - uuid: 7a4f4696f6254206ba1fc0f2b741dd9c
                   expression: 'last(/Futur-Tech App Fail2ban/fail2ban.is_running[{#JAIL}])=0'
@@ -76,8 +85,6 @@ zabbix_export:
                     host: 'Futur-Tech App Fail2ban'
                     key: 'fail2ban.cur_banned[{#JAIL}]'
       tags:
-        - tag: component
-          value: security
         - tag: Futur-Tech
       macros:
         - macro: '{$FAIL2BAN.BAN.MIN}'

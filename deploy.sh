@@ -25,7 +25,7 @@ bak_if_exist "/etc/sudoers.d/${app_name}"
 sudoersd_reset_file $app_name zabbix
 sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/deploy-update.sh"
 sudoersd_addto_file $app_name zabbix "$(type -p fail2ban-client) status"
-sudoersd_addto_file $app_name zabbix "$(type -p fail2ban-client) status *"
+sudoersd_addto_file $app_name zabbix "$(type -p fail2ban-client) ^status [-a-zA-Z0-9_]+$"
 show_bak_diff_rm "/etc/sudoers.d/${app_name}"
 
 echo "
